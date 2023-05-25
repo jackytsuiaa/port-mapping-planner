@@ -1,0 +1,182 @@
+- name: Get Interface Information
+  hosts: CTC
+  gather_facts: no
+  vars:
+    interface_result: []
+    mac_result: []
+    new_vlan_result: []
+    description_result: []
+    show_mac: "show mac address-table | i dummykeyword"
+
+  tasks:
+    - name: Clear mac output
+      file:
+        path: ./output/mac_address_table/
+        state: absent
+      delegate_to: localhost
+      run_once: true
+
+    - name: Clear CSV output
+      file:
+        path: ./output/interface_report.csv
+        state: absent
+      delegate_to: localhost
+      run_once: true
+
+    - name: Gather interface information
+      ios_command:
+        commands:
+          - "show interfaces status"
+      register: interface_output
+
+    - name: beautify interface_output
+      set_fact:
+        beautified_interface_output: "{{ interface_output.stdout_lines| flatten | regex_replace('  +', ' ')  }}"
+
+    - name: Process interface output
+      include_tasks: process_interface.yaml
+      vars:
+        interface: "{{ item.split(' ') }}"
+        ansible_hostname: "{{ inventory_hostname }}"
+      loop: "{{ beautified_interface_output[1:]  }}"
+    
+    
+    - debug: msg="**********{{ show_mac }}**********"
+
+    - name: Gather mac
+      block:
+        - name: Run show mac address-table
+          ios_command:
+            commands:
+              - "{{show_mac}}"
+            retries: 5
+            interval: 10
+          register: mac_output
+      rescue:
+        - name: Rescue show mac address-table
+          ios_command:
+            commands:
+              - "show mac address-table | i Gi|Fa"
+            retries: 5
+            interval: 10
+          register: mac_output
+        
+    - name: beautify mac_output
+      set_fact:
+        beautified_mac_output: "{{ mac_output.stdout_lines| flatten | regex_replace(' +', ' ')}}"
+
+    - name: Process mac output
+      include_tasks: process_mac.yaml
+      vars:
+        mac: "{{ item | regex_replace('^ ', '') }}"
+      loop: "{{ beautified_mac_output  }}"
+
+
+    - name: Update interface result with mac address
+      set_fact:
+        interface_result: "{{interface_result | difference([item]) +  
+        [{'store': item.store, 
+        'switch': item.switch, 
+        'name': item.name, 
+        'description': item.description, 
+        'status': item.status, 
+        'vlan': item.vlan, 
+        'new_vlan': item.new_vlan, 
+        'mac': mac_result[item.name] }] }}"
+      when: 
+       - item.vlan != 'trunk'
+       - item.vlan != 'routed'
+       - mac_result[item.name] is defined
+      loop: "{{interface_result}}"
+
+    - name: Process new vlan
+      include_tasks: process_new_vlan.yaml
+      loop: "{{ interface_result  }}"
+
+    - name: Update interface result with new vlan and description
+      set_fact:
+        interface_result: "{{interface_result | difference([item]) +  
+        [{'store': item.store, 
+        'switch': item.switch, 
+        'name': item.name, 
+        'description': description_result[item.name], 
+        'status': item.status, 
+        'vlan': item.vlan, 
+        'new_vlan': new_vlan_result[item.name], 
+        'mac': item.mac }] }}"
+      when: 
+       - item.vlan != 'trunk'
+       - item.vlan != 'routed'
+       - new_vlan_result[item.name] is defined
+       - description_result[item.name] is defined
+      loop: "{{interface_result}}"
+
+    - name: Build CSV headers
+      lineinfile:
+        dest: "./output/interface_report.csv"
+        line: Banner,Store,Hostname,Interface,Description,Status,Vlan,Mac Address,New Vlan
+        create: true
+        state: present
+      delegate_to: localhost
+      run_once: true
+
+    - name: Generate CSV output
+      lineinfile:
+        dest: "./output/interface_report.csv"
+        line: "{{group_names[-1] }},{{ item.store }},{{ item.switch }},{{ item.name }},{{ item.description }},{{ item.status }},{{ item.vlan }},{{ item.mac }},{{ item.new_vlan }}"
+        state: present
+      loop: "{{ interface_result }}"
+      delegate_to: localhost
+
+    - name: debug mac_output
+      debug:
+        msg: "{{ mac_output.stdout_lines }}"   
+
+    - name: debug interface_output
+      debug:
+        msg: "{{ interface_output.stdout_lines }}"   
+
+    - name: debug interface_result
+      debug:
+        msg: "{{ interface_result }}"   
+
+    - name: Gather full mac address-table
+      ios_command:
+        commands:
+          - "show mac address-table"
+        retries: 5
+        interval: 10
+      register: mac_address_table_output
+
+    - name: Generate mac output
+      lineinfile:
+        dest: "./output/mac_address_table/{{inventory_hostname}}.csv"
+        line: "{{item}}"
+        create: true
+        state: present
+      with_items: "{{ mac_address_table_output.stdout_lines }}"
+      delegate_to: localhost
+
+
+    # - name: Build mac output
+    #   lineinfile:
+    #     dest: "./output/mac_address_table.txt"
+    #     line: "[{{inventory_hostname}} start]\n[{{inventory_hostname}} end]\n"
+    #     create: true
+    #     state: present
+    #     insertafter:
+    #   delegate_to: localhost
+
+    # - name: Generate mac output
+    #   lineinfile:
+    #     dest: "./output/mac_address_table.txt"
+    #     line: "{{item}}"
+    #     state: present
+    #     insertbefore: '^\[{{inventory_hostname}} end\]'
+    #   with_items: "{{ mac_address_table_output.stdout_lines }}"
+    #   when:
+    #     - "{{'CPU' not in item}}"
+    #     - "{{'Vlan' not in item}}"
+    #     - "{{'----' not in item}}"
+    #     - "{{'Mac Address Table' not in item}}"
+    #   delegate_to: localhost

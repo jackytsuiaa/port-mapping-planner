@@ -1,0 +1,19 @@
+- debug: msg="Processing... {{ mac }}"
+
+- name: Extract mac details
+  set_fact:
+    vlan: "{{mac.split(' ')[0]}}"
+    macaddr: "{{mac.split(' ')[1]}}"
+    interface: "{{mac.split(' ')[3]}}"
+
+- name: Add to mac_result
+  set_fact:
+    mac_result: "{{ mac_result | combine ({ interface : macaddr })  }}"
+  when: mac_result[interface] is undefined
+   
+
+- name: debug mac_result...
+  debug:
+    msg: "{{ mac_result }}"
+
+

@@ -1,0 +1,63 @@
+- name: update vlan 40 --> 500 VOIP (marks only)
+  set_fact:
+    vlan: "500"
+    description: "VOIP"
+  when:
+    - item.vlan == '40'
+    - group_names[-1] == 'Marks'
+
+- name: update vlan 50 --> 500 VOIP (FGL only)
+  set_fact:
+    vlan: "500"
+    description: "VOIP"
+  when:
+    - item.vlan == '50'
+    - group_names[-1] == 'FGL'
+
+- name: update vlan 110 --> 700 Traffic Counter
+  set_fact:
+    vlan: "700"
+    description: "Traffic Counter"
+  when:
+    - item.vlan == '110'
+
+- name: update vlan 111 --> 700 Vendor Vlan
+  set_fact:
+    vlan: "700"
+    description: "Vendor Vlan"
+  when:
+    - item.vlan == '111'
+
+- name: update vlan 130 --> 300 Security Device
+  set_fact:
+    vlan: "300"
+    description: "Security Device"
+  when:
+    - item.vlan == '130'
+
+- name: update vlan 50 --> 700 Adflow (Marks only)
+  set_fact:
+    vlan: "700"
+    description: "Adflow"
+  when:
+    - item.vlan == '50'
+    - group_names[-1] == 'Marks'
+
+- name: update vlan 210 --> 400 Digital
+  set_fact:
+    vlan: "400"
+    description: "Digital"
+  when:
+    - item.vlan == '210'
+
+- name: update vlan 10/11 --> 100 POS
+  set_fact:
+    vlan: "400"
+    description: "Digital"
+  when:
+    - (item.vlan == '10') or (item.vlan == '11')
+    - "1ce" == item.mac[:3]
+
+
+
+

@@ -1,0 +1,114 @@
+- debug: msg="Processing... {{ item }}"
+
+
+- name: reset new_vlan and description
+  set_fact:
+    new_vlan: ""
+    description: ""
+
+- name: update vlan 40 --> 500 VOIP (marks only)
+  set_fact:
+    new_vlan: "500"
+    description: "VOIP"
+  when:
+    - item.vlan == '40'
+    - group_names[-1] == 'Marks'
+
+- name: update vlan 50 --> 500 VOIP (FGL only)
+  set_fact:
+    new_vlan: "500"
+    description: "VOIP"
+  when:
+    - item.vlan == '50'
+    - group_names[-1] == 'FGL'
+
+- name: update vlan 110 --> 700 Traffic Counter
+  set_fact:
+    new_vlan: "700"
+    description: "Traffic Counter"
+  when:
+    - item.vlan == '110'
+
+- name: update vlan 111 --> 700 Vendor Vlan
+  set_fact:
+    new_vlan: "700"
+    description: "Vendor Vlan"
+  when:
+    - item.vlan == '111'
+
+- name: update vlan 130 --> 300 Security Device
+  set_fact:
+    new_vlan: "300"
+    description: "Security Device"
+  when:
+    - item.vlan == '130'
+
+- name: update vlan 50 --> 700 Adflow (Marks only)
+  set_fact:
+    new_vlan: "700"
+    description: "Adflow"
+  when:
+    - item.vlan == '50'
+    - group_names[-1] == 'Marks'
+
+- name: update vlan 210 --> 400 Digital
+  set_fact:
+    new_vlan: "400"
+    description: "Digital"
+  when:
+    - item.vlan == '210'
+
+- name: update vlan 10/11 --> 100 POS
+  set_fact:
+    new_vlan: "100"
+    description: "Digital"
+  when:
+    - item.status == "connected"
+    - (item.vlan == '10') or (item.vlan == '11')
+    - item.mac[:3] == "1ce"
+
+- name: update vlan 10/11 --> 101 Workstation
+  set_fact:
+    new_vlan: "101"
+    description: "Workstation"
+  when:
+    - item.status == "connected"
+    - (item.vlan == '10') or (item.vlan == '11')
+    - item.mac[:3] != "1ce"
+    - item.mac[:7] != "0021.b7"
+    - item.mac[:7] != "0020.00"
+    - item.mac[:7] != "788c.77"
+    - item.mac[:7] != "0004.00"
+
+- name: update vlan 10/11 --> 102 Printer
+  set_fact:
+    new_vlan: "102"
+    description: "Printer"
+  when:
+    - item.status == "connected"
+    - (item.vlan == '10') or (item.vlan == '11')
+    - (item.mac[:7] == "0021.b7") or (item.mac[:7] == "0020.00") or (item.mac[:7] == "788c.77") or (item.mac[:7] == "0004.00")
+
+
+- name: Add to new_vlan_result
+  set_fact:
+    new_vlan_result: "{{ new_vlan_result | combine ({ item.name : new_vlan })  }}"
+  when: 
+    - new_vlan_result[item.name] is undefined
+    - new_vlan != ""
+
+- name: debug new_vlan_result...
+  debug:
+    msg: "{{ new_vlan_result }}"
+
+- name: Add to description_result
+  set_fact:
+    description_result: "{{ description_result | combine ({ item.name : description })  }}"
+  when: 
+    - description_result[item.name] is undefined
+    - description != ""
+
+- name: debug description_result...
+  debug:
+    msg: "{{ description_result }}"
+   
