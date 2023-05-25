@@ -1,0 +1,203 @@
+- debug: msg="Processing... {{ item }}"
+
+
+- name: reset new_vlan and description
+  set_fact:
+    new_vlan: ""
+    description: ""
+
+- name: Update PS VLAN
+  block:
+    - name: update vlan 4 --> 100 POS
+      set_fact:
+        new_vlan: "100"
+        description: "POS"
+      when:
+        - item.vlan == '4'
+
+    - name: update vlan 3 --> 200 EFD
+      set_fact:
+        new_vlan: "200"
+        description: "EFD"
+      when:
+        - item.vlan == '3'
+
+    - name: update vlan 2 --> 101 Corp wired device PC
+      set_fact:
+        new_vlan: "101"
+        description: "Corp wired device PC"
+      when:
+        - item.vlan == '2'
+        - item.status == "connected"
+        - item.mac[:7] != "00d0.89"
+        - item.mac[:7] != "0021.b7"
+        - item.mac[:7] != "0020.00"
+        - item.mac[:7] != "788c.77"
+        - item.mac[:7] != "0004.00"
+
+    - name: update vlan 2 --> 102 Printer
+      set_fact:
+        new_vlan: "102"
+        description: "Printer"
+      when:
+        - item.vlan == '2'
+        - item.status == "connected"
+        - (item.mac[:7] == "0021.b7") or (item.mac[:7] == "0020.00") or (item.mac[:7] == "788c.77") or (item.mac[:7] == "0004.00")
+
+    - name: update vlan 2 --> 700 Diebold security server
+      set_fact:
+        new_vlan: "700"
+        description: "Diebold security server"
+      when:
+        - item.vlan == '2'
+        - item.status == "connected"
+        - item.mac[:7] == "00d0.89"
+
+    - name: update vlan 31 --> 500 VOIP
+      set_fact:
+        new_vlan: "500"
+        description: "VOIP"
+      when:
+        - item.vlan == '31'
+  when: group_names[-1] == 'PS'
+
+- name: Update GB VLAN
+  block:
+    - name: update vlan 2 --> 101 Corp wired device
+      set_fact:
+        new_vlan: "101"
+        description: "Corp wired device"
+      when:
+        - item.vlan == '2'
+    - name: update vlan 4 --> 100 POS on router only
+      set_fact:
+        new_vlan: "100"
+        description: "POS"
+      when:
+        - item.vlan == '4'
+    - name: update vlan 6 --> 700 Non Corp device
+      set_fact:
+        new_vlan: "700"
+        description: "Non Corp device"
+      when:
+        - item.vlan == '6'
+  when: group_names[-1] == 'GB'
+
+
+- name: Update CTR/PC VLAN
+  block:
+    - name: update vlan 2 --> 2 Corp wired device
+      set_fact:
+        new_vlan: "2"
+        description: "Corp wired device"
+      when:
+        - item.vlan == '2'
+    - name: update vlan 6 --> 6 Dealer wired device
+      set_fact:
+        new_vlan: "6"
+        description: "Dealer wired device"
+      when:
+        - item.vlan == '6'
+    - name: update vlan 21 --> 21 Wired tablet
+      set_fact:
+        new_vlan: "21"
+        description: "Wired tablets"
+      when:
+        - item.vlan == '21'
+    - name: update vlan 3 --> 3 RF Gun
+      set_fact:
+        new_vlan: "3"
+        description: "RF Gun"
+      when:
+        - item.vlan == '3'
+    - name: update vlan 4 --> 4 POS
+      set_fact:
+        new_vlan: "4"
+        description: "POS"
+      when:
+        - item.vlan == '4'
+    - name: update vlan 5 --> 5 Server Management
+      set_fact:
+        new_vlan: "5"
+        description: "Server Management"
+      when:
+        - item.vlan == '5'
+    - name: update vlan 51 --> 51 Frontier
+      set_fact:
+        new_vlan: "51"
+        description: "Frontier"
+      when:
+        - item.vlan == '51'
+    - name: update vlan 52 --> 52 ESL
+      set_fact:
+        new_vlan: "52"
+        description: "ESL"
+      when:
+        - item.vlan == '52'
+    - name: update vlan 53 --> 53 Squid
+      set_fact:
+        new_vlan: "53"
+        description: "Squid"
+      when:
+        - item.vlan == '53'
+    - name: update vlan 61 --> 61 Dealer wireless
+      set_fact:
+        new_vlan: "61"
+        description: "Dealer wireless"
+      when:
+        - item.vlan == '61'
+    - name: update vlan 63 --> 63 Dealer VOIP
+      set_fact:
+        new_vlan: "63"
+        description: "Dealer VOIP"
+      when:
+        - item.vlan == '63'
+    - name: update vlan 7 --> 7 3rd party digital signage
+      set_fact:
+        new_vlan: "7"
+        description: "3rd party digital signage"
+      when:
+        - item.vlan == '7'
+    - name: update vlan 32 --> 32 Mobile print
+      set_fact:
+        new_vlan: "32"
+        description: "Mobile print"
+      when:
+        - item.vlan == '32'
+    - name: update vlan 31 --> 31 EFD VOIP
+      set_fact:
+        new_vlan: "31"
+        description: "EFD VOIP"
+      when:
+        - item.vlan == '52'
+    - name: update vlan 205 --> 205 Guest WiFi
+      set_fact:
+        new_vlan: "205"
+        description: "Guest WiFi"
+      when:
+        - item.vlan == '205'
+  when: (group_names[-1] == 'CTR') or (group_names[-1] == 'PC') 
+
+
+- name: Add to new_vlan_result
+  set_fact:
+    new_vlan_result: "{{ new_vlan_result | combine ({ item.name : new_vlan })  }}"
+  when: 
+    - new_vlan_result[item.name] is undefined
+    - new_vlan != ""
+
+- name: debug new_vlan_result...
+  debug:
+    msg: "{{ new_vlan_result }}"
+
+- name: Add to description_result
+  set_fact:
+    description_result: "{{ description_result | combine ({ item.name : description })  }}"
+  when: 
+    - description_result[item.name] is undefined
+    - description != ""
+
+- name: debug description_result...
+  debug:
+    msg: "{{ description_result }}"
+   

@@ -1,0 +1,48 @@
+- debug: msg="Processing... {{ interface }}"
+
+- name: set interface name
+  set_fact:
+    name:  "{{interface[0]}}"
+
+- name: set interface status
+  set_fact:
+    status: "{{item}}"
+    description_end_index: "{{idx}}"
+  when:
+    - (item == "connected") or (item == "notconnect") or (item == "disabled")
+  loop: "{{ interface }}"
+  loop_control:
+    index_var: idx
+
+- name: clear description
+  set_fact:
+    description: ""
+
+- name: set interface description
+  set_fact:
+    description: "{{description + ' ' + item}}"
+  when: description_end_index > 1
+  loop: "{{ interface[1:description_end_index] }}"
+  
+- name: set interface vlan
+  set_fact:
+    vlan: "{{interface[description_end_index+1]}}"
+
+- name: set interface_result
+  set_fact:
+    interface_result: "{{ interface_result + [{'store':ansible_hostname.split('-cr-')[0], 'switch':ansible_hostname, 'name': name, 'description': description, 'status': status, 'vlan': vlan, 'new_vlan':'', 'mac': ''}] }}"
+
+- name: debug interface_result...
+  debug:
+    msg: "{{ interface_result }}"
+
+- name: amend show_mac
+  set_fact:
+    show_mac: "{{show_mac + '|' + name}}"
+  when: 
+      - vlan != 'trunk'
+      - vlan != 'routed'
+
+- name: debug show_mac...
+  debug:
+    msg: "{{ show_mac }}"
