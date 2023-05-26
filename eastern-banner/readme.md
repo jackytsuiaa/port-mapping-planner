@@ -4,41 +4,26 @@ It retrieves the interfaces status and their mac address on the network devices,
 
 ![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/66365d98-353a-43d5-83c1-2c06253c928c)
 
-Notes to create a ansible controller node:
+Notes to create an ansible controller node on windows PC:
 1. Download Vitual Box
-2. Create an Ubuntu VM
-3. sudo passwd root
-4. allow ssh
-5. reboot
-6. port forwarding
-7. sudo apt update
-8. sudo apt install python3-pip
-python3 -m pip install ansible
+2. Create an Ubuntu VM on top with one NAT network adaptor
+3. `sudo passwd root`
+4. Allow ssh and `reboot`
+5. Set up port forwarding rule for ssh locally
+6. `sudo apt update`
+7. `sudo apt install python3-pip`
+8. `python3 -m pip install ansible`
+9. `ansible --version`
 
-this project include 2 parts
-play1 - get all the switch inventory
-play2 - get interface information
-
-
-to run play 1
-1. delete log1 in the original directory
-2. create a screen `sreen`
-3. `ansible-playbook play1.yaml -i inventory/hosts > log1`
-4. `Ctrl + A + D`
-5. `tail -f log1` to monitor the process
-6. it takes ~2 days for all hosts
-7. output is in `output/switch_inventory.csv`
-8. failed switch is captured in `error.log`
-9. `inventory/updated_hosts` is generated for play2
-
-to run play 2
-1. delete log2 in the original directory
-2. make sure the targeted switch is in `inventory/updated_hosts`. you can comment out others. 
-3. create a screen `sreen`
-4. `ansible-playbook play2.yaml -i inventory/updated_hosts > log2`
-5. `Ctrl + A + D`
-6. `tail -f log2` to monitor the process
-7. it takes ~2 days for all hosts
-8. output is in `output/interface_report.csv` and `output/mac_address_table.txt`
+To run the script:
+1. `cd eastern-banner`
+2. `cp group_vars/all-copy.yaml group_vars/all.yaml`
+3. Configure the username and password in group_vars/all.yaml
+5. Make sure the targeted switch is in `inventory/hosts`. Others can be commented out or removed.
+6. `sreen`
+7. `ansible-playbook play2.yaml > log`
+8. `Ctrl + A + D`
+9. `tail -f log` to monitor the process
+10. output is in `output/interface_report.csv` and `output/mac_address_table.txt`
 
 
