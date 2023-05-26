@@ -1,9 +1,9 @@
-this project include 2 parts
-play1 - get all the switch inventory
-play2 - get interface information
+This project includes 2 parts
+play1 - Crawling from a seed switch in each store to get a full switch inventory
+play2 - Get interface list with vlan convertion from Cisco to Juniper
 
 
-to run play 1
+To run play 1
 1. delete log1 in the original directory
 2. create a screen `sreen`
 3. `ansible-playbook play1.yaml -i inventory/hosts > log1`
