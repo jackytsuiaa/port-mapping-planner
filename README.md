@@ -2,7 +2,7 @@
 
 This is a port mapping planner powered by Ansible.
 
-It is mainly used for providing interface details of the legacy Cisco devices in over 1000 retail stores in order to migrate to Juniper Networks.
+It identify the interface details of the legacy Cisco devices in over 1000 retail stores in order to migrate to Juniper Networks.
 
 This project basically is developed for 2 functions
 * play1 - Crawling from a seed switch in each store to get a full switch inventory
@@ -13,5 +13,7 @@ This project basically is developed for 2 functions
 
 ![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/8d0f7887-94a0-454a-bb65-2c4e26e8ff3e)
 
-Check out western-banner/ or eastern-banner/ for more details.
+The stores are divided in western banner and eastern banner. Each banner has different requirements.
+
+Check out [western-banner/](western-banner/) or [eastern-banner/](eastern-banner/) for more details.
 
