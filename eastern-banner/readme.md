@@ -1,16 +1,19 @@
-This is the scripts targetting to the stores in Eastern Banner.
+This is a script targetting the stores of Eastern Banner.
 
-Note to create a 
-Download Vitual Box
-Create Ubuntu
-sudo passwd root
-allow ssh
-reboot
-port forwarding
-sudo apt update
-sudo apt install python3-pip
+It retrieves the interfaces status and their mac address on the network devices, and identifies their vlan by the following rules: 
 
-sudo apt install ansible
+![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/66365d98-353a-43d5-83c1-2c06253c928c)
+
+Notes to create a ansible controller node:
+1. Download Vitual Box
+2. Create an Ubuntu VM
+3. sudo passwd root
+4. allow ssh
+5. reboot
+6. port forwarding
+7. sudo apt update
+8. sudo apt install python3-pip
+python3 -m pip install ansible
 
 this project include 2 parts
 play1 - get all the switch inventory
