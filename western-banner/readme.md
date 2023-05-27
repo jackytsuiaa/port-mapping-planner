@@ -28,12 +28,12 @@ It contains 2 parts.
 ***To run play 2***
 1. `cd port-mapping-planner/western-banner/`
 2. Configure the username and password in group_vars/all.yaml
-4. Make sure the targeted switch is in `inventory/updated_hosts`. you can comment out others. 
-5. Delete log2 in the original directory
+4. Make sure the targeted switch is in `inventory/updated_hosts`. Others can be commented out or removed.
+5. `rm log2`
 6. Create a screen `sreen`
 7. `ansible-playbook play2.yaml -i inventory/updated_hosts > log2`
 8. `Ctrl + A + D`
 9. `tail -f log2` to monitor the process
-10. Output in `output/interface_report.csv` and `output/mac_address_table.txt`
+10. Outputs are in `output/interface_report.csv` and `output/mac_address_table.txt`
 
 
