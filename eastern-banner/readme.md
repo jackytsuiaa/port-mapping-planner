@@ -1,4 +1,4 @@
-This is a script targetting the stores of Eastern Banner.
+This is a script targeting the stores of Eastern Banner.
 
 It retrieves the interfaces status and their mac address on the network devices, and identifies their vlan by the following rules: 
 
@@ -24,6 +24,6 @@ To run the script:
 7. `ansible-playbook play2.yaml > log`
 8. `Ctrl + A + D`
 9. `tail -f log` to monitor the process
-10. output is in `output/interface_report.csv` and `output/mac_address_table.txt`
+10. outputs are generated in `output/interface_report.csv` and `output/mac_address_table.txt`
 
 
