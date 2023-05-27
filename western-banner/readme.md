@@ -1,11 +1,12 @@
-This is the script targeting the stores of Western Banner.
+This is a script targeting the stores of Western Banner.
 
 It contains 2 parts.
 
-Play1
-Crawling from a seed switch in each store recursively by reaching to the CDP neighbor. It extracts the device's Banner, Store, Hostname, IP Address, Model, Serial Number, Stacked Number, Stacked Serial Number, Connection and Error Message in csv format as an output of a full inventory list.
+Play1 - Crawling from a seed switch in each store recursively by reaching to their CDP neighbor while extracting the device's information such as Banner, Store, Hostname, IP Address, Model, Serial Number, Stacked Number, Stacked Serial Number, Connection status and catches the Error Message if the connection is fail. The full inventory list is output in csv format.
+![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/de6ddca6-d57a-4816-b39e-6c61e3374126)
 
-play2 - Get interface list with vlan convertion from Cisco to Juniper
+play2 - Get interface list with vlan convertion from Cisco to Juniper It retrieves the interfaces status and their mac address on the network devices, and identifies their vla
+n by the following rules: 
 
 
 To run play 1
