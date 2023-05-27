@@ -1,4 +1,7 @@
-This project includes 2 parts
+This is the script targeting the stores of Western Banner.
+
+It contains 2 parts.
+
 Play1
 Crawling from a seed switch in each store recursively by reaching to the CDP neighbor. It extracts the device's Banner, Store, Hostname, IP Address, Model, Serial Number, Stacked Number, Stacked Serial Number, Connection and Error Message in csv format as an output of a full inventory list.
 
