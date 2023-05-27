@@ -21,9 +21,10 @@ To run the script:
 3. Configure the username and password in group_vars/all.yaml
 5. Make sure the targeted switch is in `inventory/hosts`. Others can be commented out or removed.
 6. `sreen`
-7. `ansible-playbook play2.yaml > log`
-8. `Ctrl + A + D`
-9. `tail -f log` to monitor the process
-10. outputs are generated in `output/interface_report.csv` and `output/mac_address_table.txt`
+7. `rm log`
+8. `ansible-playbook play2.yaml > log`
+9. `Ctrl + A + D`
+10. `tail -f log` to monitor the process
+11. outputs are generated in `output/interface_report.csv` and `output/mac_address_table.txt`
 
 
