@@ -157,26 +157,3 @@
       with_items: "{{ mac_address_table_output.stdout_lines }}"
       delegate_to: localhost
 
-
-    # - name: Build mac output
-    #   lineinfile:
-    #     dest: "./output/mac_address_table.txt"
-    #     line: "[{{inventory_hostname}} start]\n[{{inventory_hostname}} end]\n"
-    #     create: true
-    #     state: present
-    #     insertafter:
-    #   delegate_to: localhost
-
-    # - name: Generate mac output
-    #   lineinfile:
-    #     dest: "./output/mac_address_table.txt"
-    #     line: "{{item}}"
-    #     state: present
-    #     insertbefore: '^\[{{inventory_hostname}} end\]'
-    #   with_items: "{{ mac_address_table_output.stdout_lines }}"
-    #   when:
-    #     - "{{'CPU' not in item}}"
-    #     - "{{'Vlan' not in item}}"
-    #     - "{{'----' not in item}}"
-    #     - "{{'Mac Address Table' not in item}}"
-    #   delegate_to: localhost
