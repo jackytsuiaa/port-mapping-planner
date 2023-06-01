@@ -30,7 +30,7 @@
 
 - name: set interface_result
   set_fact:
-    interface_result: "{{ interface_result + [{'store':ansible_hostname.split('sw')[0], 'switch':ansible_hostname, 'name': name, 'description': description, 'status': status, 'vlan': vlan, 'new_vlan':'', 'mac': ''}] }}"
+    interface_result: "{{ interface_result + [{'store':ansible_hostname.split('sw')[0], 'switch':ansible_hostname, 'name': name, 'description': description, 'status': status, 'vlan': vlan, 'new_vlan':'', 'mac': '', 'neighbor': ''}] }}"
 
 - name: debug interface_result...
   debug:
@@ -42,6 +42,7 @@
   when: 
       - vlan != 'trunk'
       - vlan != 'routed'
+      - (vlan == '10') or (vlan == '11')
 
 - name: debug show_mac...
   debug:

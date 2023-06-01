@@ -6,6 +6,7 @@
     mac_result: []
     new_vlan_result: []
     description_result: []
+    neighbor_result: []
     show_mac: "show mac address-table | i dummykeyword"
 
   tasks:
@@ -79,6 +80,7 @@
         'switch': item.switch, 
         'name': item.name, 
         'description': item.description, 
+        'neighbor': item.neighbor, 
         'status': item.status, 
         'vlan': item.vlan, 
         'new_vlan': item.new_vlan, 
@@ -87,6 +89,36 @@
        - item.vlan != 'trunk'
        - item.vlan != 'routed'
        - mac_result[item.name] is defined
+      loop: "{{interface_result}}"
+
+    
+    - name: Retrieve switch facts
+      ios_facts:
+      register: switch_facts
+      
+    - name: Gather neighbor
+      set_fact:
+        neighbor: "{{ switch_facts.ansible_facts.ansible_net_neighbors }}"
+
+    - name: Process neighbor
+      include_tasks: process_neighbor.yaml
+      loop: "{{ neighbor | dict2items | subelements('value') }}"
+
+
+    - name: Update interface result with neighbor
+      set_fact:
+        interface_result: "{{interface_result | difference([item]) +  
+        [{'store': item.store, 
+        'switch': item.switch, 
+        'name': item.name, 
+        'description': item.description, 
+        'neighbor': neighbor_result[item.name], 
+        'status': item.status, 
+        'vlan': item.vlan, 
+        'new_vlan': item.new_vlan, 
+        'mac': item.mac }] }}"
+      when:
+       - neighbor_result[item.name] is defined
       loop: "{{interface_result}}"
 
     - name: Process new vlan
@@ -100,6 +132,7 @@
         'switch': item.switch, 
         'name': item.name, 
         'description': description_result[item.name], 
+        'neighbor': item.neighbor, 
         'status': item.status, 
         'vlan': item.vlan, 
         'new_vlan': new_vlan_result[item.name], 
@@ -114,7 +147,7 @@
     - name: Build CSV headers
       lineinfile:
         dest: "./output/interface_report.csv"
-        line: Banner,Store,Hostname,Interface,Description,Status,Vlan,Mac Address,New Vlan
+        line: Banner,Store,Hostname,Interface,Description,Neighbor,Status,Vlan,Mac Address,New Vlan
         create: true
         state: present
       delegate_to: localhost
@@ -123,7 +156,7 @@
     - name: Generate CSV output
       lineinfile:
         dest: "./output/interface_report.csv"
-        line: "{{group_names[-1] }},{{ item.store }},{{ item.switch }},{{ item.name }},{{ item.description }},{{ item.status }},{{ item.vlan }},{{ item.mac }},{{ item.new_vlan }}"
+        line: "{{group_names[-1] }},{{ item.store }},{{ item.switch }},{{ item.name }},{{ item.description }},{{ item.neighbor }},{{ item.status }},{{ item.vlan }},{{ item.mac }},{{ item.new_vlan }}"
         state: present
       loop: "{{ interface_result }}"
       delegate_to: localhost
