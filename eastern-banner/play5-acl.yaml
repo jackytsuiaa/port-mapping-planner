@@ -1,0 +1,43 @@
+- name: Get ACL
+  hosts: CTR,PC
+  gather_facts: no
+
+  tasks:
+    - name: Clear acl output
+      file:
+        path: ./output/acl/
+        state: absent
+      delegate_to: localhost
+      run_once: true
+
+    - name: Export ACL
+      block:
+        - name: sh run sec EXPRESS
+          ios_command:
+            commands:
+              - "sh run | sec EXPRESS"
+          register: express_output
+
+        - name: sh run sec DEALER
+          ios_command:
+            commands:
+              - "sh run | sec DEALER"
+          register: dealer_output
+
+        - name: Generate ACL output
+          lineinfile:
+            dest: "./output/acl/{{inventory_hostname}}.txt"
+            line: "{{item}}"
+            create: true
+            state: present
+          with_items: 
+            - 'sh run | sec EXPRESS'
+            - '{{ express_output.stdout }}'
+            - ' '
+            - 'sh run | sec DEALER'
+            - '{{ dealer_output.stdout }}'
+          delegate_to: localhost
+
+
+      when: 
+        - '"-cr-r" in inventory_hostname'

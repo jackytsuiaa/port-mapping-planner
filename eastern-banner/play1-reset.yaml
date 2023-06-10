@@ -1,0 +1,10 @@
+- name: Reset
+  hosts: CTC
+  gather_facts: no
+  tasks:
+    - name: Clear CSV output
+      file:
+        path: ./output/interface_report.csv
+        state: absent
+      delegate_to: localhost
+      run_once: true

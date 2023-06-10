@@ -1,0 +1,52 @@
+- name: Get IP Reservation
+  hosts: CTR,PC
+  gather_facts: no
+  vars:
+    dhcp_reservation: []
+
+  tasks:
+    - name: Clear CSV output
+      file:
+        path: ./output/ip_reservation_CTR_PC.csv
+        state: absent
+      delegate_to: localhost
+      run_once: true
+
+    - name: Build CSV headers
+      lineinfile:
+        dest: "./output/ip_reservation_CTR_PC.csv"
+        line: Banner,Store,Router,DHCP Pool Name,Mac Address,Reserved Address
+        create: true
+        state: present
+      delegate_to: localhost
+      run_once: true
+
+    - name: DHCP IP reservation
+      block:
+        - name: Gather dhcp config
+          ios_command:
+            commands:
+              - "show run | sec dhcp"
+          register: dhcpconfig
+        - name: Extract dhcp reservation
+          set_fact:
+            dhcp_reservation: "{{ dhcp_reservation + [{'dhcp_client_mac':item.split(' ')[2][2:17] | regex_replace('[^A-Za-z0-9]',''),
+            'dhcp_pool': ansible_loop.previtem.split(' host ')[1],
+            'dhcp_pool_name': ansible_loop.allitems[ansible_loop.index0-2].split(' ')[-1]}] }}"
+          loop: "{{ dhcpconfig.stdout_lines | flatten }}"
+          loop_control:
+            extended: true
+          when: 
+            - "'client-identifier' in item"
+        - name: debug dhcp_reservation
+          debug:
+            msg: "{{dhcp_reservation}}"    
+        - name: Generate CSV output
+          lineinfile:
+            dest: "./output/ip_reservation_CTR_PC.csv"
+            line: "{{group_names[-1] }},{{ inventory_hostname.split('-cr-')[0] }},{{ inventory_hostname }},{{ item.dhcp_pool_name }},{{ item.dhcp_client_mac }},{{ item.dhcp_pool }}"
+            state: present
+          loop: "{{ dhcp_reservation }}"
+          delegate_to: localhost
+      when: 
+        - '"-cr-r" in inventory_hostname'

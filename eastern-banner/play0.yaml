@@ -1,0 +1,5 @@
+- import_playbook: play1-reset.yaml
+- import_playbook: play2-interface-report.yaml
+- import_playbook: play3-ip-reservation.yaml
+- import_playbook: play4-mac-address.yaml
+- import_playbook: play5-acl.yaml

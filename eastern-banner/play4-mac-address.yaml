@@ -1,0 +1,77 @@
+- name: Get mac address table
+  hosts: CTC
+  gather_facts: no
+
+  tasks:
+    - name: Clear mac output
+      file:
+        path: ./output/mac_address_table/
+        state: absent
+      delegate_to: localhost
+      run_once: true
+
+    - name: Gather full mac address-table
+      block:
+        - name: Run show mac address-table
+          ios_command:
+            commands:
+              - "show mac address-table"
+            retries: 5
+            interval: 10
+          register: mac_address_table_output
+      rescue:
+        - name: Rescue show mac address-table
+          ios_command:
+            commands:
+              - "show mac-address-table"
+            retries: 5
+            interval: 10
+          register: mac_address_table_output
+
+    - name: Generate mac output
+      lineinfile:
+        dest: "./output/mac_address_table/{{inventory_hostname}}.csv"
+        line: "{{item}}"
+        create: true
+        state: present
+      with_items: "{{ mac_address_table_output.stdout_lines }}"
+      delegate_to: localhost
+
+    - name: Identiy AP number
+      block:
+        - name: Gather WS2000 interface
+          ios_command:
+            commands:
+              - "show interfaces status | i WS2000"
+          register: WS2000_interface_output
+        - name: Extract WS2000 interface
+          set_fact:
+            WS2000_interface: "{{WS2000_interface_output.stdout_lines[0][0].split('WS2000')[0] | regex_replace('  +', '')}}"
+        - name: Gather WS2000 mac address
+          ios_command:
+            commands:
+              - "show mac address | i {{WS2000_interface}}"
+          register: WS2000_mac_output
+        - name: debug WS2000_mac_output
+          debug:
+            msg: "{{WS2000_mac_output.stdout_lines | flatten | regex_replace(' +', '  ')}}"
+
+        - name: Generate mac output of WS2000 interface
+          lineinfile:
+            dest: "./output/mac_address_table/{{inventory_hostname}}.csv"
+            line: "Mac Address on WS2000 interface:"
+            create: true
+            state: present
+          delegate_to: localhost
+
+        - name: Generate mac output of WS2000 interface
+          lineinfile:
+            dest: "./output/mac_address_table/{{inventory_hostname}}.csv"
+            line: "{{item | regex_replace('^ ', '')}}"
+            state: present
+          with_items: "{{ WS2000_mac_output.stdout_lines | flatten | regex_replace(' +', '  ')}}"
+          delegate_to: localhost
+      when: 
+        - group_names[-1] == 'PC'
+        - '"-cr-s" in inventory_hostname'
+        - inventory_hostname[-9:]=='-1.ns.ctc'

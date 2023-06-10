@@ -28,9 +28,152 @@
   set_fact:
     vlan: "{{interface[description_end_index+1]}}"
 
+
+- name: clear sanity_check
+  set_fact:
+    sanity_check: ""
+
+- name: Perform sanity check 1
+  block:
+    - debug: msg="show run interface {{name}}"
+    - name: get DEALER LAN interface config
+      ios_command:
+        commands:
+          - "show run interface {{name}}"
+      register: dealer_lan_config
+ 
+    - name: set sanity_check
+      set_fact:
+        sanity_check: "fail"   
+
+    - name: set sanity_check
+      set_fact:
+        sanity_check: "pass"
+      when:
+        - dealer_lan_config.stdout_lines[0][0] == 'Building configuration...'
+        - dealer_lan_config.stdout_lines[0][1] == ''
+        - dealer_lan_config.stdout_lines[0][3] == '!'
+        - dealer_lan_config.stdout_lines[0][5] == ' description DEALER LAN'
+        - dealer_lan_config.stdout_lines[0][6] == ' switchport access vlan 6'
+        - dealer_lan_config.stdout_lines[0][7] == ' switchport mode access'
+        - dealer_lan_config.stdout_lines[0][8] == ' switchport nonegotiate'
+        - dealer_lan_config.stdout_lines[0][9] == ' no power efficient-ethernet'
+        - dealer_lan_config.stdout_lines[0][10] == ' no cdp enable'
+        - dealer_lan_config.stdout_lines[0][11] == ' spanning-tree portfast'
+        - dealer_lan_config.stdout_lines[0][12] == 'end'
+  when: 
+    - group_names[-1] == 'CTR'
+    - '"-cr-s" in ansible_hostname'
+    - ansible_hostname[-9:]=='-1.ns.ctc'
+    - description==' DEALER LAN'
+
+- name: Perform sanity check 2
+  block:
+    - debug: msg="show run interface {{name}}"
+    - name: get DEALER LAN interface config
+      ios_command:
+        commands:
+          - "show run interface {{name}}"
+      register: dealer_lan_config
+
+    - name: set sanity_check
+      set_fact:
+        sanity_check: "fail"   
+
+    - name: set sanity_check
+      set_fact:
+        sanity_check: "pass"
+      when:
+        - dealer_lan_config.stdout_lines[0][0] == 'Building configuration...'
+        - dealer_lan_config.stdout_lines[0][1] == ''
+        - dealer_lan_config.stdout_lines[0][3] == '!'
+        - dealer_lan_config.stdout_lines[0][5] == ' description DEALER LAN'
+        - dealer_lan_config.stdout_lines[0][6] == ' switchport access vlan 6'
+        - dealer_lan_config.stdout_lines[0][7] == ' switchport mode access'
+        - dealer_lan_config.stdout_lines[0][8] == ' switchport nonegotiate'
+        - dealer_lan_config.stdout_lines[0][9] == ' power inline never'
+        - dealer_lan_config.stdout_lines[0][10] == ' no cdp enable'
+        - dealer_lan_config.stdout_lines[0][11] == ' spanning-tree portfast'
+        - dealer_lan_config.stdout_lines[0][12] == 'end'
+  when: 
+    - group_names[-1] == 'PC'
+    - '"-cr-s" in ansible_hostname'
+    - ansible_hostname[-9:]=='-1.ns.ctc'
+    - description==' DEALER LAN'
+
+- name: clear primary and secondary address
+  set_fact:
+    primary_address: ""
+    secondary_address: ""
+
+- name: Indentify primary and secondary address
+  block:
+    - name: identify router
+      set_fact:
+        router: "{{item}}"
+      when:
+        - ansible_hostname.split('-')[0] == item.split('-')[0]
+        - '"-cr-r" in item'
+      with_items: "{{ groups['CTR'] }}"
+
+    - name: Gather vlan6 config
+      ios_command:
+        commands:
+          - "show run | sec interface Vlan6"
+      register: vlan6config
+      delegate_to: "{{router}}"
+
+    - name: set primary and secondary address
+      set_fact:
+        primary_address: "not identified"
+        secondary_address: "not identified"
+
+    - name: extract primary address
+      set_fact:
+        primary_address: "{{vlan6config.stdout_lines[0][2].split(' ')[3]}}"
+      when: 
+        - vlan6config.stdout_lines[0][2] is defined
+        - vlan6config.stdout_lines[0][2].split(' ')[-1] != "secondary"
+        - vlan6config.stdout_lines[0][2].split(' ')[1] == "ip"
+        - vlan6config.stdout_lines[0][2].split(' ')[2] == "address"
+
+    - name: extract secondary address
+      set_fact:
+        secondary_address: "{{vlan6config.stdout_lines[0][2].split(' ')[3]}}"
+      when: 
+        - vlan6config.stdout_lines[0][2] is defined
+        - vlan6config.stdout_lines[0][2].split(' ')[-1] == "secondary"
+        - vlan6config.stdout_lines[0][2].split(' ')[1] == "ip"
+        - vlan6config.stdout_lines[0][2].split(' ')[2] == "address"
+
+    - name: extract primary address
+      set_fact:
+        primary_address: "{{vlan6config.stdout_lines[0][3].split(' ')[3]}}"
+      when: 
+        - vlan6config.stdout_lines[0][3] is defined
+        - vlan6config.stdout_lines[0][3].split(' ')[-1] != "secondary"
+        - vlan6config.stdout_lines[0][3].split(' ')[1] == "ip"
+        - vlan6config.stdout_lines[0][3].split(' ')[2] == "address"
+
+    - name: extract secondary address
+      set_fact:
+        secondary_address: "{{vlan6config.stdout_lines[0][3].split(' ')[3]}}"
+      when: 
+        - vlan6config.stdout_lines[0][3] is defined
+        - vlan6config.stdout_lines[0][3].split(' ')[-1] == "secondary"
+        - vlan6config.stdout_lines[0][3].split(' ')[1] == "ip"
+        - vlan6config.stdout_lines[0][3].split(' ')[2] == "address"
+        - group_names[-1] == 'CTR'
+  when: 
+    - group_names[-1] == 'CTR'
+    - '"-cr-s" in ansible_hostname'
+    - ansible_hostname[-9:]=='-1.ns.ctc'
+    - description==' DEALER LAN'
+    - vlan=='6'
+
 - name: set interface_result
   set_fact:
-    interface_result: "{{ interface_result + [{'store':ansible_hostname.split('-cr-')[0], 'switch':ansible_hostname, 'name': name, 'description': description, 'status': status, 'vlan': vlan, 'new_vlan':'', 'mac': ''}] }}"
+    interface_result: "{{ interface_result + [{'store':ansible_hostname.split('-cr-')[0], 'switch':ansible_hostname, 'name': name, 'description': description, 'new_description': '', 'status': status, 'vlan': vlan, 'new_vlan':'', 'mac': '', 'sanity_check':sanity_check, 'primary_address':primary_address, 'secondary_address':secondary_address}] }}"
 
 - name: debug interface_result...
   debug:
