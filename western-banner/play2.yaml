@@ -1,5 +1,6 @@
 - name: Get Interface Information
   hosts: CTC
+  serial: "50%"
   gather_facts: no
   vars:
     interface_result: []
@@ -10,19 +11,19 @@
     show_mac: "show mac address-table | i dummykeyword"
 
   tasks:
-    - name: Clear mac output
-      file:
-        path: ./output/mac_address_table/
-        state: absent
-      delegate_to: localhost
-      run_once: true
+    # - name: Clear mac output
+    #   file:
+    #     path: ./output/mac_address_table/
+    #     state: absent
+    #   delegate_to: localhost
+    #   run_once: true
 
-    - name: Clear CSV output
-      file:
-        path: ./output/interface_report.csv
-        state: absent
-      delegate_to: localhost
-      run_once: true
+    # - name: Clear CSV output
+    #   file:
+    #     path: ./output/interface_report.csv
+    #     state: absent
+    #   delegate_to: localhost
+    #   run_once: true
 
     - name: Gather interface information
       ios_command:
@@ -42,7 +43,9 @@
       loop: "{{ beautified_interface_output[1:]  }}"
     
     
-    - debug: msg="**********{{ show_mac }}**********"
+    - name: print show_mac
+      debug: 
+        msg="**********{{ show_mac }}**********"
 
     - name: Gather mac
       block:
