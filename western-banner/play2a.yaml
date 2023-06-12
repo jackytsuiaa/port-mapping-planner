@@ -1,0 +1,27 @@
+- name: Get Interface Information
+  hosts: CTC
+  gather_facts: no
+
+  tasks:
+    - name: Clear mac output
+      file:
+        path: ./output/mac_address_table/
+        state: absent
+      delegate_to: localhost
+      run_once: true
+
+    - name: Clear CSV output
+      file:
+        path: ./output/interface_report.csv
+        state: absent
+      delegate_to: localhost
+      run_once: true
+      
+    - name: Build CSV headers
+      lineinfile:
+        dest: "./output/interface_report.csv"
+        line: Banner,Store,Hostname,Interface,Description,Neighbor,Status,Vlan,Mac Address,New Vlan
+        create: true
+        state: present
+      delegate_to: localhost
+      run_once: true
