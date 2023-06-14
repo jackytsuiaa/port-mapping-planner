@@ -7,14 +7,14 @@
   tasks:
     - name: Clear CSV output
       file:
-        path: ./output/ip_reservation_CTR_PC.csv
+        path: ./output/dhcp_reservation_CTR_PC.csv
         state: absent
       delegate_to: localhost
       run_once: true
 
     - name: Build CSV headers
       lineinfile:
-        dest: "./output/ip_reservation_CTR_PC.csv"
+        dest: "./output/dhcp_reservation_CTR_PC.csv"
         line: Banner,Store,Router,DHCP Pool Name,Mac Address,Reserved Address
         create: true
         state: present
@@ -43,7 +43,7 @@
             msg: "{{dhcp_reservation}}"    
         - name: Generate CSV output
           lineinfile:
-            dest: "./output/ip_reservation_CTR_PC.csv"
+            dest: "./output/dhcp_reservation_CTR_PC.csv"
             line: "{{group_names[-1] }},{{ inventory_hostname.split('-cr-')[0] }},{{ inventory_hostname }},{{ item.dhcp_pool_name }},{{ item.dhcp_client_mac }},{{ item.dhcp_pool }}"
             state: present
           loop: "{{ dhcp_reservation }}"

@@ -1,0 +1,55 @@
+- name: Get IP Reservation
+  hosts: PS
+  gather_facts: no
+  vars:
+    ip_reservation: []
+
+  tasks:
+    - name: Clear CSV output
+      file:
+        path: ./output/ip_reservation_PS.csv
+        state: absent
+      delegate_to: localhost
+      run_once: true
+
+    - name: Build CSV headers
+      lineinfile:
+        dest: "./output/ip_reservation_PS.csv"
+        line: Banner,Store,Router,Mac Address,Reserved Address,VLAN
+        create: true
+        state: present
+      delegate_to: localhost
+      run_once: true
+
+    - name: DHCP IP reservation
+      block:
+        - name: Gather ip arp
+          ios_command:
+            commands:
+              - "show arp | include lan2|lan4"
+          register: arp
+        - name: process arp
+          include_tasks: process_arp.yaml
+          vars:
+            ip: "{{ item.split(' ')[1] }}"
+            mac: "{{ item.split(' ')[3] }}"
+            vlan: "{{ item.split(' ')[-1][-1] }}"
+          loop: "{{arp.stdout_lines | flatten | regex_replace(' +', ' ')}}"
+
+        - name: debug arp
+          debug:
+            msg: "{{arp.stdout_lines | flatten | regex_replace(' +', ' ')}}"
+        - name: debug ip_reservation
+          debug:
+            msg: "{{ip_reservation}}"     
+      when: 
+        - '"-cr-r" in inventory_hostname'
+
+
+    - name: Generate CSV output
+      lineinfile:
+        dest: "./output/ip_reservation_PS.csv"
+        line: "{{group_names[-1] }},{{ inventory_hostname.split('-cr-')[0] }},{{ inventory_hostname }},{{ item.mac }},{{ item.ip }},{{ item.vlan }}"
+        state: present
+      loop: "{{ ip_reservation }}"
+      delegate_to: localhost

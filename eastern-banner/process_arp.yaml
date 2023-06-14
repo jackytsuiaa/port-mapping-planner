@@ -1,0 +1,217 @@
+- debug: msg="Processing... {{ mac }},{{ ip }},{{ vlan }}"
+
+- name: clear new_ip, new_vlan
+  set_fact:
+    new_vlan: ""
+    new_ip: ""
+
+
+- name: Update vlan4 Paylanes
+  block:
+    - name: update vlan4
+      set_fact:
+        new_vlan: "100"
+    - name: update vlan4 ip
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.{{ip.split('.')[3]}}"
+  when:
+    - vlan == '4'
+    - (ip.split('.')[3] == "20") or
+      (ip.split('.')[3] == "21") or
+      (ip.split('.')[3] == "22") or
+      (ip.split('.')[3] == "23") or
+      (ip.split('.')[3] == "24") or
+      (ip.split('.')[3] == "25") or
+      (ip.split('.')[3] == "26") or
+      (ip.split('.')[3] == "27") or
+      (ip.split('.')[3] == "28") or
+      (ip.split('.')[3] == "29") or
+      (ip.split('.')[3] == "30") or
+      (ip.split('.')[3] == "31")
+  
+
+- name: Update vlan2 PC
+  block:
+    - name: update vlan2
+      set_fact:
+        new_vlan: "101"
+    - name: .132 --> .100 HYKO
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.100"
+      when: (ip.split('.')[3] == "132")
+    - name: .134 --> .101
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.101"
+      when: (ip.split('.')[3] == "134")
+    - name: .135 --> .102
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.102"
+      when: (ip.split('.')[3] == "135")
+    - name: .136 --> .103
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.103"
+      when: (ip.split('.')[3] == "136")
+    - name: .137 --> .104
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.104"
+      when: (ip.split('.')[3] == "137")
+    - name: .138 --> .105
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.105"
+      when: (ip.split('.')[3] == "138")
+    - name: .139 --> .106
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.106"
+      when: (ip.split('.')[3] == "139")
+    - name: .140 --> .107
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.107"
+      when: (ip.split('.')[3] == "140")
+    - name: .141 --> .108
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.108"
+      when: (ip.split('.')[3] == "141")
+    - name: .142 --> .109
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.109"
+      when: (ip.split('.')[3] == "142")
+    - name: .143 --> .110
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.110"
+      when: (ip.split('.')[3] == "143")
+    - name: .144 --> .111
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.111"
+      when: (ip.split('.')[3] == "144")
+    - name: .145 --> .112
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.112"
+      when: (ip.split('.')[3] == "145")
+  when:
+    - vlan == '2'
+    - (ip.split('.')[3] == "132") or
+      (ip.split('.')[3] == "134") or
+      (ip.split('.')[3] == "135") or
+      (ip.split('.')[3] == "136") or
+      (ip.split('.')[3] == "137") or
+      (ip.split('.')[3] == "138") or
+      (ip.split('.')[3] == "139") or
+      (ip.split('.')[3] == "140") or
+      (ip.split('.')[3] == "141") or
+      (ip.split('.')[3] == "142") or
+      (ip.split('.')[3] == "143") or
+      (ip.split('.')[3] == "144") or
+      (ip.split('.')[3] == "145")
+
+
+- name: Update vlan2 Printer
+  block:
+    - name: update vlan2
+      set_fact:
+        new_vlan: "102"
+    - name: .151 --> .131
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.131"
+      when: (ip.split('.')[3] == "151")
+    - name: .152 --> .132
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.132"
+      when: (ip.split('.')[3] == "152")
+    - name: .153 --> .133
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.133"
+      when: (ip.split('.')[3] == "153")
+    - name: .154 --> .134
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.134"
+      when: (ip.split('.')[3] == "154")
+    - name: .155 --> .135
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.135"
+      when: (ip.split('.')[3] == "155")
+    - name: .156 --> .136
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.136"
+      when: (ip.split('.')[3] == "156")
+    - name: .157 --> .137
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.137"
+      when: (ip.split('.')[3] == "157")
+    - name: .158 --> .138
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.138"
+      when: (ip.split('.')[3] == "158")
+    - name: .159 --> .139
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.139"
+      when: (ip.split('.')[3] == "159")
+    - name: .160 --> .140
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.140"
+      when: (ip.split('.')[3] == "160")
+    - name: .161 --> .141
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.141"
+      when: (ip.split('.')[3] == "161")
+    - name: .162 --> .142
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.142"
+      when: (ip.split('.')[3] == "162")
+    - name: .163 --> .143
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.143"
+      when: (ip.split('.')[3] == "163")
+    - name: .164 --> .144
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.144"
+      when: (ip.split('.')[3] == "164")
+    - name: .165 --> .145
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.145"
+      when: (ip.split('.')[3] == "165")
+    - name: .166 --> .146
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.146"
+      when: (ip.split('.')[3] == "166")
+    - name: .167 --> .147
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.147"
+      when: (ip.split('.')[3] == "167")
+    - name: .168 --> .148
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.148"
+      when: (ip.split('.')[3] == "168")
+    - name: .169 --> .149
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.149"
+      when: (ip.split('.')[3] == "169")
+  when:
+    - vlan == '2'
+    - (ip.split('.')[3] == "151") or
+      (ip.split('.')[3] == "152") or
+      (ip.split('.')[3] == "153") or
+      (ip.split('.')[3] == "154") or
+      (ip.split('.')[3] == "155") or
+      (ip.split('.')[3] == "156") or
+      (ip.split('.')[3] == "157") or
+      (ip.split('.')[3] == "158") or
+      (ip.split('.')[3] == "159") or
+      (ip.split('.')[3] == "160") or
+      (ip.split('.')[3] == "161") or
+      (ip.split('.')[3] == "162") or
+      (ip.split('.')[3] == "163") or
+      (ip.split('.')[3] == "164") or
+      (ip.split('.')[3] == "165") or
+      (ip.split('.')[3] == "166") or
+      (ip.split('.')[3] == "168") or
+      (ip.split('.')[3] == "169")
+
+
+- name: Add to ip_reservation
+  set_fact:
+    ip_reservation: "{{ ip_reservation + [{'mac':mac,'ip':new_ip,'vlan':new_vlan}] }}"      
+  when: 
+    - new_ip != ""
+    - new_vlan != ""
+
+
