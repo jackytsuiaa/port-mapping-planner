@@ -82,7 +82,7 @@
 
     - name: set sanity_check
       set_fact:
-        sanity_check: "pass"
+        sanity_check: "Pass"
       when:
         - dealer_lan_config.stdout_lines[0][0] == 'Building configuration...'
         - dealer_lan_config.stdout_lines[0][1] == ''

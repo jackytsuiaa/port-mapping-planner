@@ -87,6 +87,26 @@
       set_fact:
         new_ip: "10.168.{{ip.split('.')[2]}}.112"
       when: (ip.split('.')[3] == "145")
+    - name: .146 --> .113
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.113"
+      when: (ip.split('.')[3] == "146")
+    - name: .147 --> .114
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.114"
+      when: (ip.split('.')[3] == "147")
+    - name: .148 --> .115
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.115"
+      when: (ip.split('.')[3] == "148")
+    - name: .149 --> .116
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.116"
+      when: (ip.split('.')[3] == "149")
+    - name: .150 --> .117
+      set_fact:
+        new_ip: "10.168.{{ip.split('.')[2]}}.117"
+      when: (ip.split('.')[3] == "150")
   when:
     - vlan == '2'
     - (ip.split('.')[3] == "132") or
@@ -101,7 +121,12 @@
       (ip.split('.')[3] == "142") or
       (ip.split('.')[3] == "143") or
       (ip.split('.')[3] == "144") or
-      (ip.split('.')[3] == "145")
+      (ip.split('.')[3] == "145") or
+      (ip.split('.')[3] == "146") or
+      (ip.split('.')[3] == "147") or
+      (ip.split('.')[3] == "148") or
+      (ip.split('.')[3] == "149") or
+      (ip.split('.')[3] == "150")
 
 
 - name: Update vlan2 Printer
