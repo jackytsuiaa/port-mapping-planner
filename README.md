@@ -1,4 +1,4 @@
-![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/87769623-4979-4f36-b22e-580804c7152c)# Port-Mapping-Planner
+# Port-Mapping-Planner
 
 This is a port mapping planner powered by Ansible.
 
@@ -14,6 +14,7 @@ This project basically is developed for the following functions
 * Estimate AP numbers on particular trunk ports
 * Provide ACL information
 * Provide IP reservation for client MAC with converted IP
+  
 ![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/d25d617a-b660-4881-b775-851741990670)
 
 The stores are divided in western banner and eastern banner. Each banner has different requirements.
