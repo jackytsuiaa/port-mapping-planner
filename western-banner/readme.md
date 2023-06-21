@@ -6,7 +6,7 @@ It contains 2 parts.
 
 ![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/de6ddca6-d57a-4816-b39e-6c61e3374126)
 
-***play2*** - Retrieve the interfaces status, neighbour device and their mac address on the network devices, and identify their vlan convertion by the following rules: 
+***play2*** - Retrieve the interfaces status, their neighbours and mac addresses on the network devices, and identify their vlan convertion by the following rules: 
 
 ![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/2b45ef62-f6cb-46c8-829a-d3a100c2690b)
 
