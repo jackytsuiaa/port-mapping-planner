@@ -1,23 +1,18 @@
 This is a script targeting the stores of Eastern Banner - CTR, Party City, PartSource, Petroleum
 
-1. Retrieve the interfaces status, description and their mac address on the network devices.
-2. Perfrom sanity check on the Dealer Lan trunk ports by scanning the interface configuration.
-   
-   ![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/4768dbbd-0ec3-46e7-8449-5910a508afb5)
-3. Distinguish the primary and secondary IP address on the Dealer network interface.
-   
-   ![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/b03939f9-cd08-4d1d-901c-cd53d86c94f2)
-4. Retrieve DHCP reservation information on the routers.
-   
-   ![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/5ae1f87c-3001-4d36-9c41-2c5bd5fdc2bd)
-5. Identify the AP number on the swicth by checking the mac address on the trunk ports.
-6. Retreive the ACL configuration.
-7. Contruct the IP reservation based on the arp table and the converted VLAN IP:
-    
-   ![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/59b6e543-a97f-4312-b191-4a8172969fdc)
-8. Identifies interfaces vlan by the following rules:
-    
-![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/66365d98-353a-43d5-83c1-2c06253c928c)
+* Retrieve the interfaces status, description and their mac address on the network devices.
+* Perfrom sanity check on the Dealer Lan trunk ports by scanning the interface configuration.
+   * ![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/4768dbbd-0ec3-46e7-8449-5910a508afb5)
+* Distinguish the primary and secondary IP address on the Dealer network interface.
+   * ![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/b03939f9-cd08-4d1d-901c-cd53d86c94f2)
+* Retrieve DHCP reservation information on the routers.
+   * ![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/5ae1f87c-3001-4d36-9c41-2c5bd5fdc2bd)
+* Identify the AP number on the swicth by checking the mac address on the trunk ports.
+* Retreive the ACL configuration.
+* Contruct the IP reservation based on the arp table and the converted VLAN IP:
+   * ![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/59b6e543-a97f-4312-b191-4a8172969fdc)
+* Identifies interfaces vlan by the following rules:
+   * ![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/66365d98-353a-43d5-83c1-2c06253c928c)
 
 Notes to create an ansible controller node on windows PC:
 1. Download Vitual Box
