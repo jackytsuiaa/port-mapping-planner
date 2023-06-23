@@ -15,17 +15,6 @@ This project basically is developed for the following functions
 * Provide ACL information
 * Provide IP reservation for client MAC with converted IP
 
-![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/d25d617a-b660-4881-b775-851741990670)
-
-![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/6b31be00-5635-4b13-bfb8-92f8bd6ab85b)
-
-![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/d1e1df3c-52fc-4dca-9cf5-faf115e2e771)
-
-![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/9f29d698-550f-47c3-829f-4640759befea)
-
-![image](https://github.com/jackytsuiaa/port-mapping-planner/assets/98607668/14e379d3-5078-4140-afab-352a40a183bf)
-
-
 The stores are divided in western banner and eastern banner. Each banner has different requirements.
 
 Check out [western-banner/](western-banner/) or [eastern-banner/](eastern-banner/) for more details.
