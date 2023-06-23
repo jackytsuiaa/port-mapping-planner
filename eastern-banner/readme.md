@@ -32,9 +32,9 @@ To run the script:
 5. Make sure the targeted switch is in `inventory/hosts`. Others can be commented out or removed.
 6. `sreen`
 7. `rm log`
-8. `ansible-playbook play2.yaml > log`
+8. `ansible-playbook play0.yaml > log`
 9. `Ctrl + A + D`
 10. `tail -f log` to monitor the process
-11. outputs are generated in `output/interface_report.csv` and `output/mac_address_table.txt`
+11. outputs are generated in `output/`
 
 
