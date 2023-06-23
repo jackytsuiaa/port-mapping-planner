@@ -1,6 +1,6 @@
 - name: Get Interface Information
   hosts: CTC
-  serial: "25%"
+  serial: 15
   gather_facts: no
   vars:
     interface_result: []
