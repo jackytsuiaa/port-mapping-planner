@@ -1,4 +1,4 @@
-This is a script targeting the stores of Eastern Banner.
+This is a script targeting the stores of Eastern Banner - CTR, Party City, PartSource, Petroleum
 
 1. Retrieve the interfaces status, description and their mac address on the network devices.
 2. Perfrom sanity check on the Dealer Lan trunk ports by scanning the interface configuration.
