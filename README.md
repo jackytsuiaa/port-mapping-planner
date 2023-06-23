@@ -5,9 +5,9 @@ This is a port mapping planner powered by Ansible.
 It identifies the interface details of the legacy Cisco devices in thousands of retail stores in order to migrate to Juniper Networks.
 
 This project basically is developed for the following functions
-* Crawling from a seed switch in each store to get a full switch inventory
+* Crawl from a seed switch in each store to get a full switch inventory
 * Get interface list with vlan convertion from Cisco to Juniper
-* Identyfy the neighbour devices for specific ports
+* Identify the neighbour devices for specific ports
 * Perfrom sanity check for particular port configuration
 * Distinguish primary and secondary IP address on the ports
 * Provide DHCP reservation information
